@@ -1,13 +1,31 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { CalorieLookupForm } from '@/components/calorie-lookup-form';
 import { CalorieResults } from '@/components/calorie-results';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCalorieStore } from '@/store';
-import { Trash2 } from 'lucide-react';
+import { calorieApi } from '@/lib/api';
+import { Trash2, Database, History, TrendingUp } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function Dashboard() {
-  const { results, clearResults } = useCalorieStore();
+  const { results, clearResults, cache, searchHistory, _hasHydrated } = useCalorieStore();
+  const [cacheStats, setCacheStats] = useState({ size: 0, totalAccess: 0 });
+
+  // Calculate cache statistics
+  useEffect(() => {
+    if (_hasHydrated) {
+      const totalAccess = cache.reduce((sum, entry) => sum + entry.accessCount, 0);
+      setCacheStats({ size: cache.length, totalAccess });
+    }
+  }, [cache, _hasHydrated]);
+
+  const handleClearSearchHistory = () => {
+    calorieApi.clearSearchHistory();
+    toast.success('Search history cleared!');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
@@ -26,20 +44,35 @@ export function Dashboard() {
             <CalorieLookupForm />
           </div>
           
-          <div className="w-full lg:w-2/3">            <div className="flex items-center justify-between mb-4">
+          <div className="w-full lg:w-2/3">
+            <div className="flex items-center justify-between mb-4">
               <div></div>
-              {results.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearResults}
-                  className="flex items-center gap-2 cursor-pointer hover:bg-accent transition-colors focus:ring-2 focus:ring-ring focus:outline-none"
-                  aria-label={`Clear search history (${results.length} items)`}
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  Clear History
-                </Button>
-              )}
+              <div className="flex gap-2">
+                {_hasHydrated && searchHistory.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearSearchHistory}
+                    className="flex items-center gap-2 cursor-pointer hover:bg-accent transition-colors focus:ring-2 focus:ring-ring focus:outline-none"
+                    aria-label={`Clear search history (${searchHistory.length} items)`}
+                  >
+                    <History className="h-4 w-4" aria-hidden="true" />
+                    Clear History
+                  </Button>
+                )}
+                {results.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearResults}
+                    className="flex items-center gap-2 cursor-pointer hover:bg-accent transition-colors focus:ring-2 focus:ring-ring focus:outline-none"
+                    aria-label={`Clear current results (${results.length} items)`}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    Clear Results
+                  </Button>
+                )}
+              </div>
             </div>
             <CalorieResults />
           </div>
