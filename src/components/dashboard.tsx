@@ -1,26 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { CalorieLookupForm } from '@/components/calorie-lookup-form';
 import { CalorieResults } from '@/components/calorie-results';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCalorieStore } from '@/store';
 import { calorieApi } from '@/lib/api';
-import { Trash2, Database, History, TrendingUp } from 'lucide-react';
+import { Trash2, History } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function Dashboard() {
-  const { results, clearResults, cache, searchHistory, _hasHydrated } = useCalorieStore();
-  const [cacheStats, setCacheStats] = useState({ size: 0, totalAccess: 0 });
+  const { results, clearResults, searchHistory, _hasHydrated } = useCalorieStore();
 
-  // Calculate cache statistics
-  useEffect(() => {
-    if (_hasHydrated) {
-      const totalAccess = cache.reduce((sum, entry) => sum + entry.accessCount, 0);
-      setCacheStats({ size: cache.length, totalAccess });
-    }
-  }, [cache, _hasHydrated]);
 
   const handleClearSearchHistory = () => {
     calorieApi.clearSearchHistory();
