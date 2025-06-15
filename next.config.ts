@@ -1,15 +1,22 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Docker deployment configuration
+  output: 'standalone',
+  
   // Performance optimizations
   experimental: {
     // Temporarily disabled due to critters dependency issue
     // optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'zustand'],
+    optimizePackageImports: ['lucide-react', 'zustand', '@hookform/resolvers', 'react-hook-form'],
+    webpackBuildWorker: true,
   },
   
   // Enable compression
   compress: true,
+  
+  // Optimize static generation
+  swcMinify: true,
   
   // Optimize images
   images: {

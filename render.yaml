@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: meal-calorie-frontend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_BASE_URL
+        value: https://meal-calorie-backend-shubham.onrender.com/api
+      - key: PORT
+        value: 3000
+    autoDeploy: true
