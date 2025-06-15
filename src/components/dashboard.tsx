@@ -26,17 +26,17 @@ export function Dashboard() {
             <CalorieLookupForm />
           </div>
           
-          <div className="w-full lg:w-2/3">
-            <div className="flex items-center justify-between mb-4">
+          <div className="w-full lg:w-2/3">            <div className="flex items-center justify-between mb-4">
               <div></div>
               {results.length > 0 && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={clearResults}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 cursor-pointer hover:bg-accent transition-colors focus:ring-2 focus:ring-ring focus:outline-none"
+                  aria-label={`Clear search history (${results.length} items)`}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                   Clear History
                 </Button>
               )}

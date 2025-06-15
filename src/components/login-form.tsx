@@ -77,9 +77,13 @@ export function LoginForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            />            <Button 
+              type="submit" 
+              className="w-full cursor-pointer hover:bg-primary/90 transition-colors focus:ring-2 focus:ring-ring focus:outline-none" 
+              disabled={isLoading}
+              aria-label={isLoading ? 'Signing in...' : 'Sign in to your account'}
+            >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
               Sign In
             </Button>
           </form>

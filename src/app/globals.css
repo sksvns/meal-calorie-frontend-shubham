@@ -118,4 +118,26 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Ensure all interactive/clickable elements have pointer cursor */
+  button,
+  [role="button"],
+  a,
+  summary,
+  [tabindex]:not([tabindex="-1"]),
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  select,
+  [data-clickable="true"] {
+    cursor: pointer;
+  }
+  
+  /* Override for disabled elements */
+  button:disabled,
+  [role="button"]:disabled,
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
 }

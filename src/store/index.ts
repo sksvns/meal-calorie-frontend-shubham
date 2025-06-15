@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 export interface User {
   username: string;
@@ -17,8 +17,10 @@ export interface CalorieResult {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  _hasHydrated: boolean;
   login: (user: User) => void;
   logout: () => void;
+  setHasHydrated: (state: boolean) => void;
 }
 
 interface CalorieState {
@@ -34,12 +36,13 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
+      _hasHydrated: false,
       login: (user: User) => set({ user, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
+      setHasHydrated: (state: boolean) => set({ _hasHydrated: state }),
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage),
     }
   )
 );

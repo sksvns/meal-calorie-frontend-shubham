@@ -107,9 +107,13 @@ export function RegisterForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            />            <Button 
+              type="submit" 
+              className="w-full cursor-pointer hover:bg-primary/90 transition-colors focus:ring-2 focus:ring-ring focus:outline-none" 
+              disabled={isLoading}
+              aria-label={isLoading ? 'Creating account...' : 'Create new account'}
+            >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
               Create Account
             </Button>
           </form>
