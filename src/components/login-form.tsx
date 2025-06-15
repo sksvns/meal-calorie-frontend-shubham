@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -17,6 +18,7 @@ import { useAuthStore } from '@/store';
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const login = useAuthStore((state) => state.login);
+  const router = useRouter();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -25,13 +27,13 @@ export function LoginForm() {
       password: '',
     },
   });
-
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
       const response = await authApi.login(data);
       login(response);
       toast.success('Login successful!');
+      router.push('/dashboard');
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -87,7 +89,17 @@ export function LoginForm() {
               Sign In
             </Button>
           </form>
-        </Form>
+        </Form>        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <button
+              onClick={() => router.push('/register')}
+              className="text-primary hover:underline cursor-pointer"
+            >
+              Create one
+            </button>
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

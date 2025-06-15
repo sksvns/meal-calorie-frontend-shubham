@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { LogOut, User, ChefHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,32 +14,47 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { useAuthStore } from '@/store';
 
 export function Header() {
-  const { user, logout, isAuthenticated } = useAuthStore();
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const { user, logout, isAuthenticated, _hasHydrated } = useAuthStore();
+  const router = useRouter();
 
   const handleLogout = () => {
     logout();
+    router.push('/login');
   };
+
+  // During SSR/hydration, always show the same structure
+  if (!_hasHydrated) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center justify-between px-4">
+          <div className="flex items-center gap-2">
+            <ChefHat className="h-6 w-6" aria-hidden="true" />
+            <span className="text-lg font-semibold">Meal Calorie Tracker</span>
+          </div>
+          
+          <div className="flex items-center gap-3 ml-auto">
+            <ThemeToggle />
+            {/* Placeholder for consistent hydration */}
+            <div className="w-8 h-8"></div>
+          </div>
+        </div>
+      </header>
+    );
+  }
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between px-4">        <div className="flex items-center gap-2 cursor-pointer" role="banner" tabIndex={0} onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
-            // Handle home navigation if needed
-            window.location.href = '/';
+            router.push('/');
           }
-        }} aria-label="Meal Calorie Tracker - Go to home page">
+        }} onClick={() => router.push('/')} aria-label="Meal Calorie Tracker - Go to home page">
           <ChefHat className="h-6 w-6" aria-hidden="true" />
           <span className="text-lg font-semibold">Meal Calorie Tracker</span>
         </div>
-        
-        <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-3 ml-auto">
           <ThemeToggle />
           
-          {isMounted && isAuthenticated && user ? (
+          {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
